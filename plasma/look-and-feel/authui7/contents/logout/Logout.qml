@@ -18,7 +18,7 @@ Image {
     height: screenGeometry.height
     width: screenGeometry.width
 
-    source: "/usr/share/sddm/themes/sddm-theme-mod/bgtexture.jpg"
+    source: "../images/bgtexture.jpg"
 
     signal logoutRequested()
     signal haltRequested()

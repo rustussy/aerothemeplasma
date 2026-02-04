@@ -38,7 +38,7 @@ Item {
         id: bg
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
-        source: "/usr/share/sddm/themes/sddm-theme-mod/bgtexture.jpg"
+        source: "../images/bgtexture.jpg"
     }
 
     Rectangle {
