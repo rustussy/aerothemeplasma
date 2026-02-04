@@ -8,6 +8,7 @@
 4. [Manual installation](#manual)
 5. [Configuring AeroThemePlasma](#conf)
 6. [GTK](#gtk)
+7. [Uninstalling AeroThemePlasma](#uninstall)
 
 ## Prerequisites <a name="preq"></a>
 
@@ -58,7 +59,7 @@ In openSUSE, additional dependencies for X11 include:
 ### Ubuntu 25.10
 
 ```bash
-apt install build-essential cmake ninja-build curl libqt6virtualkeyboard6 libqt6multimedia6 libqt6core5compat6 libplasma5support6 libkdecorations3-dev libkf6colorscheme-dev libkf6i18n-dev libkf6iconthemes-dev libkf6kcmutils-dev libkirigami-dev libkf6kio-dev libkf6notifications-dev libkf6svg-dev libkf6crash-dev libkf6globalaccel-dev libplasma-dev libplasmaactivities-dev libxcb-composite0-dev libxcb-randr0-dev libxcb-shm0-dev libxcb-damage0-dev libepoxy-dev libqt6svg6-dev kwin-dev plasma-wayland-protocols
+apt install build-essential cmake ninja-build curl libqt6virtualkeyboard6 libqt6multimedia6 libqt6core5compat6 libplasma5support6 libkdecorations3-dev libkf6colorscheme-dev libkf6i18n-dev libkf6iconthemes-dev libkf6kcmutils-dev libkirigami-dev libkf6kio-dev libkf6notifications-dev libkf6svg-dev libkf6crash-dev libkf6globalaccel-dev libplasma-dev libplasmaactivities-dev libxcb-composite0-dev libxcb-randr0-dev libxcb-shm0-dev libxcb-damage0-dev libepoxy-dev libqt6svg6-dev kwin-dev plasma-wayland-protocols libkf5qqc2desktopstyle-dev libkf6qqc2desktopstyle-dev libplasma5support-dev libkf6auth-dev libkf6newstuff-dev libkf6notifyconfig-dev libkf6attica-dev libkf6runner-dev libkf6dbusaddons-dev libkf6sonnet-dev libkf6xmlgui-dev libkf6coreaddons-dev libkf6widgetsaddons-dev libkf6guiaddons-dev qt6-base-dev qt6-5compat-dev qml-module-org-kde-qqc2desktopstyle libplasmaactivitiesstats-dev plasma-workspace-dev libkf6statusnotifieritem-dev qml-module-org-kde-kirigami-addons-sounds qml6-module-org-kde-kirigamiaddons-sounds
 ```
 
 On Ubuntu, additional dependencies for X11 include:
@@ -84,11 +85,11 @@ There are two ways to install AeroThemePlasma: Using the provided install script
 This is the recommended way of installing ATP. The install scripts compile and deploy the components required for ATP to work. Run the install scripts in the terminal:
 
 ```sh
-$ sh compile.sh --ninja
-$ sh install_plasmoids.sh --ninja
-$ sh install_kwin_components.sh
-$ sh install_plasma_components.sh
-$ sh install_misc_components.sh
+$ bash compile.sh --ninja
+$ bash install_plasmoids.sh --ninja
+$ bash install_kwin_components.sh
+$ bash install_plasma_components.sh
+$ bash install_misc_components.sh
 ```
 
 During execution, some scripts may require admin privileges or other prompts from the user. Do **NOT** run any of the provided install scripts with sudo or as root.
@@ -109,18 +110,23 @@ You can additionally pass `--ninja` to any of the following scripts in order to 
 - `install_plasmoids.sh`
 - Any individual `install.sh` script
 
+Other notable flags include:
+
+1. `--skip-libplasma` in `compile.sh`, which skips libplasma patches from being compiled and installed
+2. `--skip-kpackages` in `install_plasmoids.sh`, which skips installing the QML components of plasmoids
+
 ### Note for Wayland users
 
 The compile script must be run while passing the `--wayland` argument for KWin effects:
 
 ```bash
-$ sh compile.sh --wayland --ninja
+$ bash compile.sh --wayland --ninja
 ```
 
 If compiling individual KWin effects by running their respective `install.sh` scripts, you can also pass the `--wayland` argument there:
 
 ```bash
-$ sh install.sh --wayland --ninja
+$ bash install.sh --wayland --ninja
 ```
 
 ### Updating AeroThemePlasma
@@ -135,12 +141,12 @@ $ git pull
 and re-run the install scripts:
 
 ```sh
-$ sh compile.sh
-$ sh install_plasmoids.sh
-$ sh install_plasmoids.sh --no-compile # If there's no need to recompile the C++ parts of the plasmoids, you can pass this argument to speed things up
-$ sh install_kwin_components.sh
-$ sh install_plasma_components.sh
-$ sh install_misc_components.sh # Usually not required to run again
+$ bash compile.sh
+$ bash install_plasmoids.sh
+$ bash install_plasmoids.sh --no-compile # If there's no need to recompile the C++ parts of the plasmoids, you can pass this argument to speed things up
+$ bash install_kwin_components.sh
+$ bash install_plasma_components.sh
+$ bash install_misc_components.sh # Usually not required to run again
 ```
 
 Typically it's enough to run the first four scripts after ATP has been updated. It's highly recommended to check for new commits and read the extended descriptions in order to see what has actually changed and what's required when updating.
@@ -169,7 +175,7 @@ SevenTasks relies on modifications found in `misc/libplasma` in order to work pr
 2. Compile all the C++ components found in the `plasmoids/src` directory like this for each source directory:
 
 ```bash
-$ sh install.sh --ninja
+$ bash install.sh --ninja
 ```
 
 3. Move `sddm/sddm-theme-mod` to `/usr/share/sddm/themes`. Optionally, to enable the Vista start screen, set `enableStartup=true` in `theme.conf.user`
@@ -281,3 +287,151 @@ echo -e "Microsoft Windows [Version 6.1.7600]\nCopyright (c) 2009 Microsoft Corp
 
 AeroThemePlasma officially doesn't have any kind of maintenance, development or support for GTK applications. Instead, check out
 [Windows 7 Better](https://gitgud.io/Gamer95875/Windows-7-Better) by [Gamer95875](https://gitgud.io/Gamer95875), which is the recommended set of themes that works best with AeroThemePlasma.
+
+## Uninstalling AeroThemePlasma <a name="uninstall"></a>
+
+AeroThemePlasma provides an uninstall script that undoes much of what's installed on the system. The script assumes that all of the CMake build files are still present in the repo, most importantly the `install_manifest.txt` files generated as a result of installing compiled parts of ATP. If these files are missing from the repo, they need to be regenerated by once again rerunning the necessary scripts like this:
+
+```bash
+$ bash compile.sh --skip-libplasma [--wayland] [--ninja]
+$ bash install_plasmoids.sh --skip-kpackages [--ninja]
+```
+
+Once this is done, the script is simply executed:
+
+```bash
+$ bash uninstall.sh
+```
+
+This should be run outside of the AeroThemePlasma session, preferrably in a regular Plasma session. The script will ask for confirmation to uninstall components of the system. **Please check that none of the locations are ill-formed before accepting each prompt, especially those that require additional privileges to uninstall. In case this happens to you, report it as an issue ASAP.**
+
+Afterwards, `libplasma` and `polkit-kde-agent` should be reinstalled using your distro's package manager. For example, on Arch Linux:
+
+```bash
+sudo pacman -Sy libplasma polkit-kde-agent
+```
+
+### Manual uninstallation
+
+The script performs the following steps in order to uninstall ATP. Uninstalling ATP should be done outside of the ATP session itself. Log into the Plasma session before performing any of these steps.
+
+### CMake
+
+- Perform `sudo make uninstall` or `sudo ninja uninstall` in the following directories if applicable:
+
+```
+kwin/decoration/build
+plasma/sddm/login-sessions/build
+plasma/aerothemeplasma-kcmloader/build
+plasma/plasmoids/src/systemtray_src/build
+plasma/plasmoids/src/notifications_src/build
+plasma/plasmoids/src/volume_src/build
+plasma/plasmoids/src/sevenstart_src/build
+plasma/plasmoids/src/seventasks_src/build
+plasma/plasmoids/src/desktopcontainment/build
+kwin/effects_cpp/kde-effects-aeroglassblur/build
+kwin/effects_cpp/kwin-effect-smodsnap-v2/build
+kwin/effects_cpp/smodglow/build
+kwin/effects_cpp/aeroglide/build
+kwin/effects_cpp/startupfeedback/build
+
+# For Wayland builds
+kwin/effects_cpp/kde-effects-aeroglassblur/build-wl
+kwin/effects_cpp/kwin-effect-smodsnap-v2/build-wl
+kwin/effects_cpp/smodglow/build-wl
+kwin/effects_cpp/aeroglide/build-wl
+kwin/effects_cpp/startupfeedback/build-wl
+```
+
+### Plasmoids 
+
+- Perform `kpackagetool6 -t "Plasma/Applet" -r "plasmoid_id"` for each plasmoid, replacing `plasmoid_id` with the following:
+
+```
+io.gitgud.wackyideas.battery
+io.gitgud.wackyideas.desktopcontainment
+io.gitgud.wackyideas.digitalclocklite
+io.gitgud.wackyideas.keyboardlayout
+io.gitgud.wackyideas.networkmanagement
+io.gitgud.wackyideas.panel
+io.gitgud.wackyideas.SevenStart
+io.gitgud.wackyideas.seventasks
+io.gitgud.wackyideas.volume
+io.gitgud.wackyideas.win7showdesktop
+```
+
+### Plasma components 
+
+- Perform the following commands:
+
+```bash
+kpackagetool6 -t "Plasma/LookAndFeel" -r "authui7"
+kpackagetool6 -t "Plasma/LayoutTemplate" -r "io.gitgud.wackyideas.taskbar"
+kpackagetool6 -t "Plasma/Theme" -r "Seven-Black"
+kpackagetool6 -t "Plasma/Shell" -r "io.gitgud.wackyideas.desktop"
+```
+
+- Delete `~/.local/share/color-schemes/Aero.colors`
+- Delete `~/.config/Kvantum/Windows7Aero` 
+- Delete the sound themes from `~/.local/share/sounds`:
+
+```
+'Windows 7'
+'Windows 7 Afternoon'
+'Windows 7 Calligraphy'
+'Windows 7 Characters'
+'Windows 7 Cityscape'
+'Windows 7 Delta'
+'Windows 7 Festival'
+'Windows 7 Garden'
+'Windows 7 Heritage'
+'Windows 7 Landscape'
+'Windows 7 Quirky'
+'Windows 7 Raga'
+'Windows 7 Savanna'
+'Windows 7 Sonata'
+```
+
+- Delete the icon theme at `~/.local/share/icons/Windows 7 Aero`
+- Delete the following files at `~/.local/share/mime/packages`:
+
+```
+application-vnd.microsoft.portable-executable.xml 
+application-x-ms-dll.xml 
+application-x-msdownload.xml 
+application-x-ms-ne-executable.xml
+```
+
+and run `update-mime-database ~/.local/share/mime` to refresh MIME associations
+
+### KWin components 
+
+- Perform `kpackagetool6 -t "KWin/Effect" -r "effect_id"` for each effect, replacing `effect_id` with the following:
+
+```
+dimscreenaero
+fadingpopupsaero
+loginaero
+seventasks-thumbnails
+smodpeekeffect
+squashaero
+```
+
+- Perform the following: 
+
+```bash
+kpackagetool6 -t "KWin/Script" -r "smodpeekscript"
+kpackagetool6 -t "KWin/WindowSwitcher" -r "flip3d"
+kpackagetool6 -t "KWin/WindowSwitcher" -r "thumbnail_seven"
+```
+
+- Delete the outline at `~/.local/share/kwin/outline`
+- Delete the symlinks `~/.local/share/kwin-x11` and `~/.local/share/kwin-wayland`
+- Delete the branding at `~/.config/kdedefaults/kcm-about-distrorc` and the logo (`~/.config/kdedefaults/kcminfo.png`)
+
+### Other components 
+
+- Delete the cursor theme at `/usr/share/icons/aero-drop`
+- Delete the SDDM theme at `/usr/share/sddm/themes/sddm-theme-mod`
+- Delete the SMOD files at `/usr/share/smod` and `~/.local/share/smod`
+- Delete `/opt/aerothemeplasma`
