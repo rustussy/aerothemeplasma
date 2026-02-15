@@ -30,9 +30,9 @@ PlasmaCore.ToolTipArea {
     mainItem: showPreviews ? taskThumbnail : null
     mainText: showPreviews ? "" : model.display
     location: Plasmoid.location
-    // backgroundHints: showPreviews ? "StandardBackground" : "SolidBackground"
+    backgroundHints: showPreviews ? "StandardBackground" : "SolidBackground"
     interactive: showPreviews
-    // windowTitle: showPreviews ? "seventasks-tooltip" : ""
+    windowTitle: showPreviews ? "seventasks-tooltip" : ""
 
     onContainsMouseChanged: (containsMouse) => {
         if(tasksRoot.toolTipOpen && !showPreviews) {
