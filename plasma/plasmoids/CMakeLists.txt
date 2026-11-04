@@ -1,4 +1,4 @@
-add_subdirectory(src)
+add_subdirectory(src EXCLUDE_FROM_ALL)
 
 set(plasmoids
     io.gitgud.wackyideas.panel

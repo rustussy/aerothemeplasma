@@ -1,5 +1,4 @@
 add_subdirectory(sddm)
-add_subdirectory(atpootb)
 add_subdirectory(shells)
 add_subdirectory(plasmoids)
 add_subdirectory(color_scheme)
